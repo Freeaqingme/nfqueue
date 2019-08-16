@@ -52,16 +52,16 @@ func Run(command string, args ...string) string {
 
 func ipTables() {
 
-	/*	Run("iptables", "-F")
-		Run("iptables", "-t", "filter", "-F")
-		Run("iptables", "-t", "mangle", "-F")
-		Run("iptables", "-t", "nat", "-F")
+	Run("iptables", "-F")
+	Run("iptables", "-t", "filter", "-F")
+	Run("iptables", "-t", "mangle", "-F")
+	Run("iptables", "-t", "nat", "-F")
 
-		//Enable forwarding
-		Run("echo", "1 > /proc/sys/net/ipv4/ip_forward")
-		Run("sysctl", "-w", "net.ipv4.conf.eth0.route_localnet=1")
+	//Enable forwarding
+	Run("echo", "1 > /proc/sys/net/ipv4/ip_forward")
+	Run("sysctl", "-w", "net.ipv4.conf.eth0.route_localnet=1")
 
-		//Run("iptables", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "0:3")
-		//Run("iptables", "-A", "OUTPUT", "-j", "NFQUEUE", "--queue-balance", "0:3")
-		//Run("iptables", "-A", "FORWARD", "-j", "NFQUEUE", "--queue-balance", "0:3")*/
+	Run("iptables", "-t", "mangle", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "0:3")
+	Run("iptables", "-t", "mangle", "-A", "OUTPUT", "-j", "NFQUEUE", "--queue-balance", "0:3")
+	Run("iptables", "-t", "mangle", "-A", "FORWARD", "-j", "NFQUEUE", "--queue-balance", "0:3")
 }
