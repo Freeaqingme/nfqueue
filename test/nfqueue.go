@@ -12,43 +12,20 @@ type Handler struct{}
 func main() {
 
 	var cfg = &nfqueue.QueueConfig{
-		MaxPackets: 1000,
+		MaxPackets: 32,
 		QueueFlags: []nfqueue.QueueFlag{nfqueue.Conntrack},
-		BufferSize: 16 * 1024 * 1024,
+		BufferSize: 1600,
 	}
 
-	go func() {
-		log.Info("Queue %d created", 0)
-		var handler Handler
-		q := nfqueue.NewQueue(0, handler, cfg)
-		q.Start()
-	}()
+	var i uint16
+	for i = 0; i < 4; i++ {
 
-	go func() {
-		log.Info("Queue %d created", 1)
+		log.Info("Queue %d created", i)
 		var handler Handler
-		q := nfqueue.NewQueue(1, handler, cfg)
-		q.Start()
-	}()
+		q := nfqueue.NewQueue(i, handler, cfg)
+		go q.Start()
 
-	go func() {
-		log.Info("Queue %d created", 2)
-		var handler Handler
-		q := nfqueue.NewQueue(2, handler, cfg)
-		q.Start()
-	}()
-	go func() {
-		log.Info("Queue %d created", 3)
-		var handler Handler
-		q := nfqueue.NewQueue(3, handler, cfg)
-		q.Start()
-	}()
-	go func() {
-		log.Info("Queue %d created", 4)
-		var handler Handler
-		q := nfqueue.NewQueue(4, handler, cfg)
-		q.Start()
-	}()
+	}
 
 	ipTables()
 	for {
