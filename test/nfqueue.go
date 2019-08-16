@@ -18,6 +18,13 @@ func main() {
 	}
 
 	go func() {
+		log.Info("Queue %d created", 0)
+		var handler Handler
+		q := nfqueue.NewQueue(0, handler, cfg)
+		q.Start()
+	}()
+
+	go func() {
 		log.Info("Queue %d created", 1)
 		var handler Handler
 		q := nfqueue.NewQueue(1, handler, cfg)
