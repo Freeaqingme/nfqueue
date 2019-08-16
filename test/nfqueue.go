@@ -21,7 +21,7 @@ func main() {
 		q := nfqueue.NewQueue(i, handler, cfg)
 		q.Start()
 	}
-
+	ipTables()
 }
 
 func (Handler) Handle(packet *nfqueue.Packet) {
@@ -42,5 +42,17 @@ func Run(command string, args ...string) string {
 }
 
 func ipTables() {
-	Run("iptables", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "0:3", "--queue-bypass")
+
+	Run("iptables", "-F")
+	Run("iptables", "-t", "filter", "-F")
+	Run("iptables", "-t", "mangle", "-F")
+	Run("iptables", "-t", "nat", "-F")
+
+	//Enable forwarding
+	Run("echo", "1 > /proc/sys/net/ipv4/ip_forward")
+	Run("sysctl", "-w", "net.ipv4.conf.eth0.route_localnet=1")
+
+	Run("iptables", "-t", "mangle", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "0:3", "--queue-bypass")
+	Run("iptables", "-t", "mangle", "-A", "OUTPUT", "-j", "NFQUEUE", "--queue-balance", "0:3", "--queue-bypass")
+	Run("iptables", "-t", "mangle", "-A", "FORWARD", "-j", "NFQUEUE", "--queue-balance", "0:3", "--queue-bypass")
 }
