@@ -49,14 +49,14 @@ func main() {
 	go func() {
 		log.Info("Queue %d created", 2)
 		var handler Handler
-		q := nfqueue.NewQueue(1, handler, cfg)
+		q := nfqueue.NewQueue(2, handler, cfg)
 		q.Start()
 
 	}()
 	go func() {
 		log.Info("Queue %d created", 3)
 		var handler Handler
-		q := nfqueue.NewQueue(2, handler, cfg)
+		q := nfqueue.NewQueue(3, handler, cfg)
 		q.Start()
 
 	}()
