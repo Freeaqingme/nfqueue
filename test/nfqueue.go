@@ -17,9 +17,9 @@ func main() {
 		BufferSize: 1600,
 	}
 
-	var i int
-	var j uint16
-	for i = 0; i < 4; i++ {
+	//	var i int
+	//var j uint16
+	/*	for i = 0; i < 4; i++ {
 
 		go func() {
 			j++
@@ -30,7 +30,36 @@ func main() {
 
 		}()
 
-	}
+	}*/
+
+	go func() {
+		log.Info("Queue %d created", 0)
+		var handler Handler
+		q := nfqueue.NewQueue(0, handler, cfg)
+		q.Start()
+
+	}()
+	go func() {
+		log.Info("Queue %d created", 1)
+		var handler Handler
+		q := nfqueue.NewQueue(1, handler, cfg)
+		q.Start()
+
+	}()
+	go func() {
+		log.Info("Queue %d created", 2)
+		var handler Handler
+		q := nfqueue.NewQueue(1, handler, cfg)
+		q.Start()
+
+	}()
+	go func() {
+		log.Info("Queue %d created", 3)
+		var handler Handler
+		q := nfqueue.NewQueue(2, handler, cfg)
+		q.Start()
+
+	}()
 
 	ipTables()
 	for {
