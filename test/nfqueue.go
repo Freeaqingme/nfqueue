@@ -16,8 +16,9 @@ func main() {
 		BufferSize: 16 * 1024 * 1024,
 	}
 	var i uint16
-	for i = 0; i < 4; i++ {
+	for i = 1; i < 5; i++ {
 		var handler Handler
+		log.Info("Queue %d created", i)
 		q := nfqueue.NewQueue(i, handler, cfg)
 		q.Start()
 	}
@@ -52,7 +53,7 @@ func ipTables() {
 	Run("echo", "1 > /proc/sys/net/ipv4/ip_forward")
 	Run("sysctl", "-w", "net.ipv4.conf.eth0.route_localnet=1")
 
-	Run("iptables", "-t", "mangle", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "0:3", "--queue-bypass")
-	Run("iptables", "-t", "mangle", "-A", "OUTPUT", "-j", "NFQUEUE", "--queue-balance", "0:3", "--queue-bypass")
-	Run("iptables", "-t", "mangle", "-A", "FORWARD", "-j", "NFQUEUE", "--queue-balance", "0:3", "--queue-bypass")
+	Run("iptables", "-t", "mangle", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "1:4", "--queue-bypass")
+	Run("iptables", "-t", "mangle", "-A", "OUTPUT", "-j", "NFQUEUE", "--queue-balance", "1:4", "--queue-bypass")
+	Run("iptables", "-t", "mangle", "-A", "FORWARD", "-j", "NFQUEUE", "--queue-balance", "1:4", "--queue-bypass")
 }
