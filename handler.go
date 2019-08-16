@@ -31,7 +31,7 @@ func handle(id uint32, buffer *C.uchar, len C.int, queueID int) int {
 	packet := &Packet{
 		id:     id,
 		Buffer: C.GoBytes(unsafe.Pointer(buffer), len),
-		q:      q,
+		Q:      q,
 	}
 	q.handler.Handle(packet)
 	return 0
