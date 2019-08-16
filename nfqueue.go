@@ -41,7 +41,7 @@ type PacketHandler interface {
 type Packet struct {
 	Buffer []byte
 	id     uint32
-	q      *Queue
+	Q      *Queue
 }
 
 // Accept the packet.

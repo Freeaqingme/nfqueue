@@ -60,3 +60,7 @@ func (r *QueueRegistry) Get(queueID uint16) *Queue {
 	}
 	return nil
 }
+
+func GetQueueRegistry() *QueueRegistry {
+	return queueRegistry
+}
