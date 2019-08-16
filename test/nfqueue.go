@@ -22,10 +22,11 @@ func main() {
 	for i = 0; i < 4; i++ {
 
 		go func() {
-			j++
+
 			log.Info("Queue %d created", j)
 			var handler Handler
 			q := nfqueue.NewQueue(j, handler, cfg)
+			j++
 			q.Start()
 
 		}()
