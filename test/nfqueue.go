@@ -16,22 +16,33 @@ func main() {
 		QueueFlags: []nfqueue.QueueFlag{nfqueue.Conntrack},
 		BufferSize: 16 * 1024 * 1024,
 	}
-	var i uint16
-	for {
 
-		if i == 4 {
-			break
-		}
+	go func() {
+		log.Info("Queue %d created", 1)
+		var handler Handler
+		q := nfqueue.NewQueue(1, handler, cfg)
+		q.Start()
+	}()
 
-		go func() {
-			log.Info("Queue %d created", i)
-			var handler Handler
-			q := nfqueue.NewQueue(i, handler, cfg)
-			q.Start()
-		}()
-		i++
+	go func() {
+		log.Info("Queue %d created", 2)
+		var handler Handler
+		q := nfqueue.NewQueue(2, handler, cfg)
+		q.Start()
+	}()
+	go func() {
+		log.Info("Queue %d created", 3)
+		var handler Handler
+		q := nfqueue.NewQueue(3, handler, cfg)
+		q.Start()
+	}()
+	go func() {
+		log.Info("Queue %d created", 4)
+		var handler Handler
+		q := nfqueue.NewQueue(4, handler, cfg)
+		q.Start()
+	}()
 
-	}
 	ipTables()
 	for {
 		time.Sleep(10 * time.Second)
