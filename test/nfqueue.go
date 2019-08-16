@@ -16,11 +16,15 @@ func main() {
 		BufferSize: 16 * 1024 * 1024,
 	}
 	var i uint16
-	for i = 1; i < 5; i++ {
+	for {
+		i++
 		var handler Handler
 		log.Info("Queue %d created", i)
 		q := nfqueue.NewQueue(i, handler, cfg)
 		q.Start()
+		if i == 4 {
+			break
+		}
 	}
 	ipTables()
 }
