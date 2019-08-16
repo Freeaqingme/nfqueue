@@ -4,6 +4,7 @@ import (
 	"github.com/iesreza/gutil/log"
 	"github.com/iesreza/nfqueue"
 	"os/exec"
+	"time"
 )
 
 type Handler struct{}
@@ -21,12 +22,15 @@ func main() {
 		var handler Handler
 		log.Info("Queue %d created", i)
 		q := nfqueue.NewQueue(i, handler, cfg)
-		q.Start()
+		go q.Start()
 		if i == 4 {
 			break
 		}
 	}
 	ipTables()
+	for {
+		time.Sleep(10 * time.Second)
+	}
 }
 
 func (Handler) Handle(packet *nfqueue.Packet) {
