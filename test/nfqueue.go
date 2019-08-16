@@ -12,20 +12,25 @@ type Handler struct{}
 func main() {
 
 	var cfg = &nfqueue.QueueConfig{
-		MaxPackets: 32,
+		MaxPackets: 1000,
 		QueueFlags: []nfqueue.QueueFlag{nfqueue.Conntrack},
 		BufferSize: 16 * 1024 * 1024,
 	}
 	var i uint16
 	for {
-		i++
-		var handler Handler
-		log.Info("Queue %d created", i)
-		q := nfqueue.NewQueue(i, handler, cfg)
-		go q.Start()
+
 		if i == 4 {
 			break
 		}
+
+		go func() {
+			log.Info("Queue %d created", i)
+			var handler Handler
+			q := nfqueue.NewQueue(i, handler, cfg)
+			q.Start()
+		}()
+		i++
+
 	}
 	ipTables()
 	for {
@@ -52,16 +57,16 @@ func Run(command string, args ...string) string {
 
 func ipTables() {
 
-	Run("iptables", "-F")
-	Run("iptables", "-t", "filter", "-F")
-	Run("iptables", "-t", "mangle", "-F")
-	Run("iptables", "-t", "nat", "-F")
+	/*	Run("iptables", "-F")
+		Run("iptables", "-t", "filter", "-F")
+		Run("iptables", "-t", "mangle", "-F")
+		Run("iptables", "-t", "nat", "-F")
 
-	//Enable forwarding
-	Run("echo", "1 > /proc/sys/net/ipv4/ip_forward")
-	Run("sysctl", "-w", "net.ipv4.conf.eth0.route_localnet=1")
+		//Enable forwarding
+		Run("echo", "1 > /proc/sys/net/ipv4/ip_forward")
+		Run("sysctl", "-w", "net.ipv4.conf.eth0.route_localnet=1")
 
-	Run("iptables", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "1:4", "--queue-bypass")
-	Run("iptables", "-A", "OUTPUT", "-j", "NFQUEUE", "--queue-balance", "1:4", "--queue-bypass")
-	Run("iptables", "-A", "FORWARD", "-j", "NFQUEUE", "--queue-balance", "1:4", "--queue-bypass")
+		//Run("iptables", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "0:3")
+		//Run("iptables", "-A", "OUTPUT", "-j", "NFQUEUE", "--queue-balance", "0:3")
+		//Run("iptables", "-A", "FORWARD", "-j", "NFQUEUE", "--queue-balance", "0:3")*/
 }
