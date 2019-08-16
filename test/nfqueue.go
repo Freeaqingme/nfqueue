@@ -17,13 +17,18 @@ func main() {
 		BufferSize: 1600,
 	}
 
-	var i uint16
+	var i int
+	var j uint16
 	for i = 0; i < 4; i++ {
 
-		log.Info("Queue %d created", i)
-		var handler Handler
-		q := nfqueue.NewQueue(i, handler, cfg)
-		go q.Start()
+		go func() {
+			j++
+			log.Info("Queue %d created", j)
+			var handler Handler
+			q := nfqueue.NewQueue(j, handler, cfg)
+			q.Start()
+
+		}()
 
 	}
 
