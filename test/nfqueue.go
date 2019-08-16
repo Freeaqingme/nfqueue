@@ -1,10 +1,9 @@
 package main
 
 import (
-	"encoding/hex"
-	"fmt"
 	"github.com/iesreza/gutil/log"
 	"github.com/iesreza/nfqueue"
+	"os/exec"
 )
 
 type Handler struct{}
@@ -27,6 +26,21 @@ func main() {
 
 func (Handler) Handle(packet *nfqueue.Packet) {
 	log.Notice("Packet on queue %d", packet.Q.ID)
-	fmt.Println(hex.Dump(packet.Buffer))
+	//fmt.Println(hex.Dump(packet.Buffer))
 	packet.Accept()
+}
+
+func Run(command string, args ...string) string {
+
+	c := exec.Command(command, args...)
+	out, err := c.Output()
+	if err != nil {
+		log.Error("Unable to run %s %v", command, args)
+		log.Error("%s", err)
+	}
+	return string(out)
+}
+
+func ipTables() {
+	Run("iptables", "-A", "INPUT", "-j", "NFQUEUE", "--queue-balance", "0:3", "--queue-bypass")
 }
