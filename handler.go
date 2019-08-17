@@ -29,9 +29,9 @@ func handle(id uint32, buffer *C.uchar, len C.int, queueID int) int {
 		return 0
 	}
 	packet := &Packet{
-		id:     id,
-		Buffer: C.GoBytes(unsafe.Pointer(buffer), len),
-		Q:      q,
+		id:   id,
+		Data: C.GoBytes(unsafe.Pointer(buffer), len),
+		Q:    q,
 	}
 	q.handler.Handle(packet)
 	return 0

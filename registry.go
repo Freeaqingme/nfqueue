@@ -25,38 +25,38 @@ var queueRegistry = NewQueueRegistry()
 // a singleton registry to interact with netfilter library.
 // This registry is not thread-safe on purpose. Queues should be registered before started.
 type QueueRegistry struct {
-	queues []*Queue
+	Queues []*Queue
 }
 
 // NewQueueRegistry creates an instance of QueueRegistry.
 func NewQueueRegistry() *QueueRegistry {
 	return &QueueRegistry{
-		queues: []*Queue{},
+		Queues: []*Queue{},
 	}
 }
 
 // Register adds a queue to the registry.
 func (r *QueueRegistry) Register(queueID uint16, queue *Queue) {
-	if len(r.queues) <= int(queueID) {
+	if len(r.Queues) <= int(queueID) {
 		// Increase the capacity of the slice to store the new queue
 		queues := make([]*Queue, queueID+1)
-		copy(queues, r.queues)
-		r.queues = queues
+		copy(queues, r.Queues)
+		r.Queues = queues
 	}
-	r.queues[queueID] = queue
+	r.Queues[queueID] = queue
 }
 
 // Unregister removes a queue from the registry.
 func (r *QueueRegistry) Unregister(queueID uint16) {
-	if len(r.queues) > int(queueID) {
-		r.queues[queueID] = nil
+	if len(r.Queues) > int(queueID) {
+		r.Queues[queueID] = nil
 	}
 }
 
 // Get returns a queue from the registry based on the queueID.
 func (r *QueueRegistry) Get(queueID uint16) *Queue {
-	if len(r.queues) > int(queueID) {
-		return r.queues[queueID]
+	if len(r.Queues) > int(queueID) {
+		return r.Queues[queueID]
 	}
 	return nil
 }
