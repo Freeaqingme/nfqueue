@@ -46,8 +46,20 @@ type Packet struct {
 }
 
 // Accept the packet.
+func (p *Packet) AcceptFlow() error {
+	p.Mark = 1
+	return p.setVerdict(C.NF_ACCEPT, 0, nil)
+}
+
+// Accept the packet.
 func (p *Packet) Accept() error {
 	return p.setVerdict(C.NF_ACCEPT, 0, nil)
+}
+
+// Drop the packet.
+func (p *Packet) DropFlow() error {
+	p.Mark = 2
+	return p.setVerdict(C.NF_DROP, 0, nil)
 }
 
 // Drop the packet.
