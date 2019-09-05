@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"github.com/iesreza/gutil/log"
 	"github.com/iesreza/nfqueue"
+	"net"
 	"os/exec"
 	"time"
 )
@@ -69,6 +71,7 @@ func main() {
 
 func (Handler) Handle(packet *nfqueue.Packet) {
 	log.Notice("Packet on queue %d", packet.Q.ID)
+	fmt.Println(net.IP(packet.Data[12:16]), net.IP(packet.Data[16:20]))
 	//fmt.Println(hex.Dump(packet.Buffer))
 	packet.Accept()
 }
