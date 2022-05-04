@@ -17,7 +17,13 @@
 
 package nfqueue
 
+import(
+	"sync"
+)
+
 // queueRegistry is a singleton with the list of queues registered to dispatch the packets to the appropriate queue.
+var queueRegistryMu sync.Mutex
+
 var queueRegistry = NewQueueRegistry()
 
 // QueueRegistry stores a list of the netfilter queues registered.
@@ -30,6 +36,9 @@ type QueueRegistry struct {
 
 // NewQueueRegistry creates an instance of QueueRegistry.
 func NewQueueRegistry() *QueueRegistry {
+	queueRegistryMu.Lock()
+	defer queueRegistryMu.Unlock()
+
 	return &QueueRegistry{
 		Queues: []*Queue{},
 	}
@@ -37,6 +46,9 @@ func NewQueueRegistry() *QueueRegistry {
 
 // Register adds a queue to the registry.
 func (r *QueueRegistry) Register(queueID uint16, queue *Queue) {
+	queueRegistryMu.Lock()
+	defer queueRegistryMu.Unlock()
+
 	if len(r.Queues) <= int(queueID) {
 		// Increase the capacity of the slice to store the new queue
 		queues := make([]*Queue, queueID+1)
@@ -48,6 +60,9 @@ func (r *QueueRegistry) Register(queueID uint16, queue *Queue) {
 
 // Unregister removes a queue from the registry.
 func (r *QueueRegistry) Unregister(queueID uint16) {
+	queueRegistryMu.Lock()
+	defer queueRegistryMu.Unlock()
+
 	if len(r.Queues) > int(queueID) {
 		r.Queues[queueID] = nil
 	}
@@ -55,6 +70,9 @@ func (r *QueueRegistry) Unregister(queueID uint16) {
 
 // Get returns a queue from the registry based on the queueID.
 func (r *QueueRegistry) Get(queueID uint16) *Queue {
+	queueRegistryMu.Lock()
+	defer queueRegistryMu.Unlock()
+
 	if len(r.Queues) > int(queueID) {
 		return r.Queues[queueID]
 	}
@@ -62,5 +80,8 @@ func (r *QueueRegistry) Get(queueID uint16) *Queue {
 }
 
 func GetQueueRegistry() *QueueRegistry {
+	queueRegistryMu.Lock()
+	defer queueRegistryMu.Unlock()
+
 	return queueRegistry
 }
